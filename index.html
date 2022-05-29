@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    #container{
+        width: 60%;
+        margin: auto;
+        display: grid;
+        grid-template-columns: repeat(3,1fr);
+        gap: 20px;
+    }
+
+
+
+    
+</style>
+<body>
+    <input type="text" id="bag" placeholder="Movie name">
+    <button onclick="info()">Search for movie</button>
+    <div id="container"></div>
+</body>
+</html>
+<script>
+    function info(){
+      var movie = document.querySelector("#bag").value;
+    const url=`http://www.omdbapi.com/?s=${movie}&apikey=12a6815e`;
+    async function getData(){
+        try{
+            let res = await fetch(url);
+            let products = await res.json();
+            append(products.Search)
+            console.log(products);
+        }
+        catch(err){
+let img1 = document.createElement("img");
+img1.src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsTMOTVocd9MUXWh_dfOqfnsEzRNFEjvRaQA&usqp=CAU"
+var div = document.querySelector("#container");
+div.append(img1);
+        }
+    }
+    getData();
+
+    function append(data){
+        var div = document.querySelector("#container");
+            div.innerHTML=null;
+
+        data.forEach(function(el){
+            
+            let img = document.createElement("img");
+            img.src = el.Poster;
+            let h1 = document.createElement("h1");
+            h1.innerText=el.Title;
+            let p = document.createElement("p");
+            p.innerText = el.Year;
+            let p1=document.createElement("p")
+            p1.innerText=el.imdbID
+            var jhola = document.createElement("div");
+            jhola.append(img,h1,p,p1);
+div.append(jhola);
+        });
+    }
+    
+    }
+   
+</script>
