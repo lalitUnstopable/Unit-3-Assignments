@@ -6,65 +6,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
-<style>
-    #container{
-        width: 60%;
-        margin: auto;
-        display: grid;
-        grid-template-columns: repeat(3,1fr);
-        gap: 20px;
-    }
-
-
-
-    
-</style>
 <body>
-    <input type="text" id="bag" placeholder="Movie name">
-    <button onclick="info()">Search for movie</button>
+    <input type="text" id="city" placeholder="Enter City">
+    <button onclick="getData()">Search City</button>
     <div id="container"></div>
+
+
+    <iframe width="600" height="500" id="gmap_canvas"
+         
+          frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
 </body>
 </html>
 <script>
-    function info(){
-      var movie = document.querySelector("#bag").value;
-    const url=`http://www.omdbapi.com/?s=${movie}&apikey=12a6815e`;
+    const api_key="f5c3cdee982e7d30a65fe71af2de427f";
     async function getData(){
-        try{
-            let res = await fetch(url);
-            let products = await res.json();
-            append(products.Search)
-            console.log(products);
-        }
-        catch(err){
-let img1 = document.createElement("img");
-img1.src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSsTMOTVocd9MUXWh_dfOqfnsEzRNFEjvRaQA&usqp=CAU"
-var div = document.querySelector("#container");
-div.append(img1);
-        }
+        let city =document.querySelector("#city").value;
+        let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${api_key}`; 
+        let res = await fetch(url);
+        let data = await res.json();
+        append(data);
+        console.log(data)
     }
-    getData();
 
     function append(data){
-        var div = document.querySelector("#container");
-            div.innerHTML=null;
+        let container = document.querySelector("#container");
+        container.innerHTML ="";
+        let h3 = document.createElement("h3");
+        h3.innerText = data.name;
+        let p1 = document.createElement("p");
+        p1.innerText = `current temp:${data.main.temp}`;
 
-        data.forEach(function(el){
-            
-            let img = document.createElement("img");
-            img.src = el.Poster;
-            let h1 = document.createElement("h1");
-            h1.innerText=el.Title;
-            let p = document.createElement("p");
-            p.innerText = el.Year;
-            let p1=document.createElement("p")
-            p1.innerText=el.imdbID
-            var jhola = document.createElement("div");
-            jhola.append(img,h1,p,p1);
-div.append(jhola);
-        });
+        let p2 = document.createElement("p");
+        p2.innerText = `Maximum temp:${data.main.temp_max}`;
+        
+        let p3 = document.createElement("p");
+        p3.innerText = `Minimum temp:${data.main.temp_min}`;
+        
+        container.append(h3,p1,p2,p3)
+
+        var di = document.querySelector("#gmap_canvas");
+        di.src= `https://maps.google.com/maps?q=${data.name}&z=13&ie=UTF8&iwloc=&output=embed`;
     }
-    
-    }
-   
+
+    function getLocationWeather() {
+  navigator.geolocation.getCurrentPosition(success);
+
+  function success(position) {
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
+
+    getData(latitude, longitude);
+
+    console.log(latitude);
+    console.log(longitude);
+  }
+}
+getLocationWeather()
+
 </script>
